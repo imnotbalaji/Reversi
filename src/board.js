@@ -51,6 +51,13 @@ Board.prototype.isValidPos = function (pos) {
  * throwing an Error if the position is invalid.
  */
 Board.prototype.getPiece = function (pos) {
+  if (this.isValidPos(pos)) {
+    let x = pos[0];
+    let y = pos[1];
+    return this.grid[x][y];
+  } else {
+    throw new Error('Not valid pos!');
+  }
 };
 
 /**
@@ -58,12 +65,26 @@ Board.prototype.getPiece = function (pos) {
  * matches a given color.
  */
 Board.prototype.isMine = function (pos, color) {
+  let piece = this.getPiece(pos);
+  if (piece === undefined) {
+    return false;
+  }
+  if (piece.color === color) {
+    return true 
+  } else {
+    return false;
+  }
 };
 
 /**
  * Checks if a given position has a piece on it.
  */
 Board.prototype.isOccupied = function (pos) {
+  if (this.getPiece(pos) === undefined) {
+    return false
+  } else {
+    return true
+  }
 };
 
 /**
@@ -80,6 +101,45 @@ Board.prototype.isOccupied = function (pos) {
  * Returns empty array if no pieces of the opposite color are found.
  */
 Board.prototype._positionsToFlip = function (pos, color, dir, piecesToFlip) {
+
+  if (!this.isValidPos(pos)){
+    return [];
+  }
+
+
+  let x = pos[0];
+  let y = pos[1];
+  let x_step = dir[0];
+  let y_step = dir[1];
+  let next_x = x + x_step; 
+  let next_y = y + y_step;
+  let next_pos = [next_x, next_y];
+
+  if (!piecesToFlip) {
+    piecesToFlip = [];
+  } else {
+    piecesToFlip.push(pos);
+  }
+  
+  debugger
+   if (!this.isValidPos(next_pos) ||!this.isOccupied(next_pos) ){
+    // debugger
+    return []
+   } else if (this.isMine(next_pos.color)) {
+    // debugger
+    return piecesToFlip
+   } else {
+    //  holding_arr.push(this.getPiece(next_pos));
+     return this._positionsToFlip(next_pos,color,dir, piecesToFlip);
+   }
+
+    // check whats in the next pos 
+      // if there is a piece of the opposite color , we add it to our holding array, and   move our pos to the next pos .. is
+      // if the pice is of our own color, then we return the holding array, 
+      // if the next piece is outside the board or empty, then return an empty array 
+      
+
+
 }
 
 /**
@@ -88,6 +148,7 @@ Board.prototype._positionsToFlip = function (pos, color, dir, piecesToFlip) {
  * color being flipped.
  */
 Board.prototype.validMove = function (pos, color) {
+debugger
 };
 
 /**
